@@ -13,7 +13,6 @@ import ControlCAN
 # function define
 CAN_GET_BOARD_INFO = 1
 CAN_MODE_LOOP_BACK = 0
-CAN_SEND_DATA = 0
 CAN_READ_DATA = 1
 CAN_CALLBACK_READ_DATA = 1
 CAN_INIT_EX = 1
@@ -23,7 +22,6 @@ DeviceIndex = 0
 CANIndex = 1
 DevType = ControlCAN.VCI_USBCAN2
 # define callback function
-
 
 def GetDataCallback(cb_DeviceIndex, cb_CANIndex, cb_Len):
     DataNum = ControlCAN.VCI_GetReceiveNum(
@@ -54,10 +52,8 @@ def GetDataCallback(cb_DeviceIndex, cb_CANIndex, cb_Len):
 # Scan device
 nRet = ControlCAN.VCI_ScanDevice(1)
 if(nRet == 0):
-    print("No device connected!")
-    exit()
-else:
-    print("Have %d device connected!" % nRet)
+    raise(Exception("No device connected!"))
+
 # Get board info
 if(CAN_GET_BOARD_INFO == 1):
     CAN_BoardInfo = ControlCAN.VCI_BOARD_INFO_EX()
@@ -152,31 +148,7 @@ if(CAN_CALLBACK_READ_DATA == 1):
 # Start CAN
 nRet = ControlCAN.VCI_StartCAN(DevType, DeviceIndex, CANIndex)
 if(nRet == ControlCAN.STATUS_ERR):
-    print("Start CAN failed!")
-    exit()
-else:
-    print("Start CAN success!")
-# Send data
-if(CAN_SEND_DATA == 1):
-    CAN_SendData = (ControlCAN.VCI_CAN_OBJ * 2)()
-    for j in range(0, 2):
-        CAN_SendData[j].DataLen = 8
-        for i in range(0, CAN_SendData[j].DataLen):
-            CAN_SendData[j].Data[i] = i + j
-        CAN_SendData[j].ExternFlag = 0
-        CAN_SendData[j].RemoteFlag = 0
-        CAN_SendData[j].ID = 0x155 + j
-        if(CAN_MODE_LOOP_BACK == 1):
-            CAN_SendData[j].SendType = 2
-        else:
-            CAN_SendData[j].SendType = 0
-    nRet = ControlCAN.VCI_Transmit(
-        DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_SendData), 2)
-    if(nRet == ControlCAN.STATUS_ERR):
-        print("Send CAN data failed!")
-        VCI_ResetCAN(DevType, DeviceIndex, CANIndex)
-    else:
-        print("Send CAN data success!")
+    raise(Exception("Start CAN failed!"))
 # Delay
 sleep(0.5)
 # Get CAN status
@@ -204,6 +176,7 @@ if(CAN_GET_STATUS == 1):
 if(CAN_READ_DATA == 1):
     DataNum = ControlCAN.VCI_GetReceiveNum(DevType, DeviceIndex, CANIndex)
     CAN_ReceiveData = (ControlCAN.VCI_CAN_OBJ * DataNum)()
+    print("DataNum: {}".format(DataNum))
     if(DataNum > 0):
         ReadDataNum = ControlCAN.VCI_Receive(
             DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_ReceiveData), DataNum, 0)
