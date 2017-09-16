@@ -6,7 +6,6 @@
 # Dependent files(Windows):Ginkgo_Driver.dll,ControlCAN.py
 # Dependent files(Linux):Ginkgo_Driver.so,ControlCAN.py
 ################################################################################################
-from ctypes import *
 import ctypes
 from time import sleep
 # import USB-CAN module
@@ -31,8 +30,10 @@ def GetDataCallback(cb_DeviceIndex, cb_CANIndex, cb_Len):
         DevType, cb_DeviceIndex, cb_CANIndex)
     CAN_ReceiveData = (ControlCAN.VCI_CAN_OBJ * DataNum)()
     if(DataNum > 0):
-        ReadDataNum = ControlCAN.VCI_Receive(
-            DevType, cb_DeviceIndex, cb_CANIndex, byref(CAN_ReceiveData), DataNum, 0)
+# =============================================================================
+#         ReadDataNum = ControlCAN.VCI_Receive(
+#             DevType, cb_DeviceIndex, cb_CANIndex, ctypes.byref(CAN_ReceiveData), DataNum, 0)
+# =============================================================================
         for i in range(0, DataNum):
             print("")
             print("--CAN_ReceiveData.RemoteFlag = %d" %
@@ -103,7 +104,7 @@ if(CAN_INIT_EX == 1):
     CAN_InitEx.CAN_RELAY = 0
 
     nRet = ControlCAN.VCI_InitCANEx(
-        DevType, DeviceIndex, CANIndex, byref(CAN_InitEx))
+        DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_InitEx))
     if(nRet == ControlCAN.STATUS_ERR):
         print("Init device failed!")
         exit()
@@ -122,7 +123,7 @@ if(CAN_INIT_EX == 1):
     CAN_FilterConfig.MASK_RTR = 0
     CAN_FilterConfig.MASK_Std_Ext = 0
     nRet = ControlCAN.VCI_SetFilter(
-        DevType, DeviceIndex, CANIndex, byref(CAN_FilterConfig))
+        DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_FilterConfig))
     if(nRet == ControlCAN.STATUS_ERR):
         print("Set filter failed!")
         exit()
@@ -138,7 +139,7 @@ else:
     CAN_Init.Timing0 = 0x00
     CAN_Init.Timing1 = 0x14
     nRet = ControlCAN.VCI_InitCAN(
-        DevType, DeviceIndex, CANIndex, byref(CAN_Init))
+        DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_Init))
     if(nRet == ControlCAN.STATUS_ERR):
         print("Init device failed!")
         exit()
@@ -170,7 +171,7 @@ if(CAN_SEND_DATA == 1):
         else:
             CAN_SendData[j].SendType = 0
     nRet = ControlCAN.VCI_Transmit(
-        DevType, DeviceIndex, CANIndex, byref(CAN_SendData), 2)
+        DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_SendData), 2)
     if(nRet == ControlCAN.STATUS_ERR):
         print("Send CAN data failed!")
         VCI_ResetCAN(DevType, DeviceIndex, CANIndex)
@@ -182,7 +183,7 @@ sleep(0.5)
 if(CAN_GET_STATUS == 1):
     CAN_Status = ControlCAN.VCI_CAN_STATUS()
     nRet = ControlCAN.VCI_ReadCANStatus(
-        DevType, DeviceIndex, CANIndex, byref(CAN_Status))
+        DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_Status))
     if(nRet == ControlCAN.STATUS_ERR):
         print("Get CAN status failed!")
     else:
@@ -205,7 +206,7 @@ if(CAN_READ_DATA == 1):
     CAN_ReceiveData = (ControlCAN.VCI_CAN_OBJ * DataNum)()
     if(DataNum > 0):
         ReadDataNum = ControlCAN.VCI_Receive(
-            DevType, DeviceIndex, CANIndex, byref(CAN_ReceiveData), DataNum, 0)
+            DevType, DeviceIndex, CANIndex, ctypes.byref(CAN_ReceiveData), DataNum, 0)
         for i in range(0, DataNum):
             print("")
             print("--CAN_ReceiveData.RemoteFlag = %d" %

@@ -7,150 +7,150 @@ Dependent files(Windows):Ginkgo_Driver.dll
 Dependent files(Linux):libGinkgo_Driver.so,libusb-1.0.so
 More Infomation:www.viewtool.com
 """
-from ctypes import *
+import ctypes
 import platform
 # Compatible with other CAN adapter datatype
 
 
-class VCI_BOARD_INFO(Structure):
+class VCI_BOARD_INFO(ctypes.Structure):
     _fields_ = [
         # hardware version, in hex format, for example: 0x0100 present version is 1.00
-        ("hw_Version", c_ushort),
-        ("fw_Version", c_ushort),    # firmware version in hex format
-        ("dr_Version", c_ushort),    # driver version, in hex format
-        ("in_Version", c_ushort),    # interface library version, in hex format
-        ("irq_Num", c_ushort),        # interrupt number used by board
-        ("can_Num", c_ubyte),        # CAN channel number
-        ("str_Serial_Num", c_ubyte * 20),    # CAN board serial number
+        ("hw_Version", ctypes.c_ushort),
+        ("fw_Version", ctypes.c_ushort),    # firmware version in hex format
+        ("dr_Version", ctypes.c_ushort),    # driver version, in hex format
+        ("in_Version", ctypes.c_ushort),    # interface library version, in hex format
+        ("irq_Num", ctypes.c_ushort),        # interrupt number used by board
+        ("can_Num", ctypes.c_ubyte),        # CAN channel number
+        ("str_Serial_Num", ctypes.c_ubyte * 20),    # CAN board serial number
         # string for hardware type,for example:"USBCAN V1.00\0"(note:include string null end'\0').
-        ("str_hw_Type", c_ubyte * 40),
-        ("Reserved", c_ushort * 4)
+        ("str_hw_Type", ctypes.c_ubyte * 40),
+        ("Reserved", ctypes.c_ushort * 4)
     ];
 # Compatible with other CAN adapter datatype
 
 
-class VCI_BOARD_INFO_EX(Structure):
+class VCI_BOARD_INFO_EX(ctypes.Structure):
     _fields_ = [
         # hardware name,for example: "Ginkgo-CAN-Adaptor\0"(note: include string null end'\0')
-        ("ProductName", c_ubyte * 32),
-        ("FirmwareVersion", c_ubyte * 4),    # firmware version
-        ("HardwareVersion", c_ubyte * 4),    # hardware version
-        ("SerialNumber", c_ubyte * 12)    # adatper serial number
+        ("ProductName", ctypes.c_ubyte * 32),
+        ("FirmwareVersion", ctypes.c_ubyte * 4),    # firmware version
+        ("HardwareVersion", ctypes.c_ubyte * 4),    # hardware version
+        ("SerialNumber", ctypes.c_ubyte * 12)    # adatper serial number
     ];
 # Definition of CAN frame
 
 
-class VCI_CAN_OBJ(Structure):
-    _fields_ = [("ID", c_uint),    # Frame ID
+class VCI_CAN_OBJ(ctypes.Structure):
+    _fields_ = [("ID", ctypes.c_uint),    # Frame ID
                 # timestamp of the frame arriving,started from initialization of CAN controller
-                ("TimeStamp", c_uint),
+                ("TimeStamp", ctypes.c_uint),
                 # if using timestamp. 1: use TimeStamp, 0:not use. TimeFlag and TimeStamp is available when the frame is recived frame
-                ("TimeFlag", c_byte),
+                ("TimeFlag", ctypes.c_byte),
                 # send frame type. 0: normal send,1: single send,2: self send/receive,3: single self send/receive
-                ("SendType", c_byte),
-                ("RemoteFlag", c_byte),    # remote frame flag
-                ("ExternFlag", c_byte),    # extended frame flag
+                ("SendType", ctypes.c_byte),
+                ("RemoteFlag", ctypes.c_byte),    # remote frame flag
+                ("ExternFlag", ctypes.c_byte),    # extended frame flag
                 # Data length(<=8),how many uint8_ts of data
-                ("DataLen", c_byte),
-                ("Data", c_byte * 8),      # text data
-                ("Reserved", c_byte * 3)    # reserved
+                ("DataLen", ctypes.c_byte),
+                ("Data", ctypes.c_byte * 8),      # text data
+                ("Reserved", ctypes.c_byte * 3)    # reserved
                 ];
 # definition of CAN controller status
 
 
-class VCI_CAN_STATUS(Structure):
-    _fields_ = [("ErrInterrupt", c_byte),    # interrupt record,will be cleared while reading
-                ("regMode", c_byte),        # CAN controller mode register
-                ("regStatus", c_byte),        # CAN controller status register
+class VCI_CAN_STATUS(ctypes.Structure):
+    _fields_ = [("ErrInterrupt", ctypes.c_byte),    # interrupt record,will be cleared while reading
+                ("regMode", ctypes.c_byte),        # CAN controller mode register
+                ("regStatus", ctypes.c_byte),        # CAN controller status register
                 # CAN controller arbitrator lost register
-                ("regALCapture", c_byte),
-                ("regECCapture", c_byte),    # CAN controller error register
+                ("regALCapture", ctypes.c_byte),
+                ("regECCapture", ctypes.c_byte),    # CAN controller error register
                 # CAN controller error alarm limitation register
-                ("regEWLimit", c_byte),
+                ("regEWLimit", ctypes.c_byte),
                 # CAN controller receive error register
-                ("regRECounter", c_byte),
+                ("regRECounter", ctypes.c_byte),
                 # CAN controller send error register
-                ("regTECounter", c_byte),
-                ("regESR", c_uint),              # CAN controller status register
-                ("regTSR", c_uint),              # CAN controller status register
+                ("regTECounter", ctypes.c_byte),
+                ("regESR", ctypes.c_uint),              # CAN controller status register
+                ("regTSR", ctypes.c_uint),              # CAN controller status register
                 # CAN controller receive buffer size
-                ("BufferSize", c_uint),
-                ("Reserved", c_uint),        #
+                ("BufferSize", ctypes.c_uint),
+                ("Reserved", ctypes.c_uint),        #
                 ]
 
 # definition of error data type
 
 
-class VCI_ERR_INFO(Structure):
-    _fields_ = [("ErrCode", c_uint),            # error code
+class VCI_ERR_INFO(ctypes.Structure):
+    _fields_ = [("ErrCode", ctypes.c_uint),            # error code
                 # error identification data when error has passive error
-                ("Passive_ErrData", c_ubyte * 3),
+                ("Passive_ErrData", ctypes.c_ubyte * 3),
                 # error identification data when error has arbitration lost error
-                ("ArLost_ErrData", c_ubyte)
+                ("ArLost_ErrData", ctypes.c_ubyte)
                 ]
 # definition of CAN initialization data type
 
 
-class VCI_INIT_CONFIG(Structure):
-    _fields_ = [("AccCode", c_uint),            # ACC code (for verification)
-                ("AccMask", c_uint),        # Mask code
-                ("Reserved", c_uint),        #
+class VCI_INIT_CONFIG(ctypes.Structure):
+    _fields_ = [("AccCode", ctypes.c_uint),            # ACC code (for verification)
+                ("AccMask", ctypes.c_uint),        # Mask code
+                ("Reserved", ctypes.c_uint),        #
                 # filter type.0: double filter,1: single filter
-                ("Filter", c_byte),
-                ("Timing0", c_byte),        # Timer 0
-                ("Timing1", c_byte),        # Timer 1
-                ("Mode", c_byte)
+                ("Filter", ctypes.c_byte),
+                ("Timing0", ctypes.c_byte),        # Timer 0
+                ("Timing1", ctypes.c_byte),        # Timer 1
+                ("Mode", ctypes.c_byte)
                 ];
 # Definition of CAN initialization data type
 
 
-class VCI_INIT_CONFIG_EX(Structure):
-    _fields_ = [("CAN_BRP", c_uint),  # range: 1~1024, CAN baudrate = 36MHz/(CAN_BRP)/(CAN_SJW+CAN_BS1+CAN_BS2)
-                ("CAN_SJW", c_byte),    # range: 1~4
-                ("CAN_BS1", c_byte),    # range: 1~16
-                ("CAN_BS2", c_byte),     # range: 1~8
+class VCI_INIT_CONFIG_EX(ctypes.Structure):
+    _fields_ = [("CAN_BRP", ctypes.c_uint),  # range: 1~1024, CAN baudrate = 36MHz/(CAN_BRP)/(CAN_SJW+CAN_BS1+CAN_BS2)
+                ("CAN_SJW", ctypes.c_byte),    # range: 1~4
+                ("CAN_BS1", ctypes.c_byte),    # range: 1~16
+                ("CAN_BS2", ctypes.c_byte),     # range: 1~8
                 # CAN working mode. 0: normal,1: loopback,2: silent,3: silent loopback
-                ("CAN_Mode", c_byte),
+                ("CAN_Mode", ctypes.c_byte),
                 # auto off line management. 0: prohibit,1: enable
-                ("CAN_ABOM", c_byte),
+                ("CAN_ABOM", ctypes.c_byte),
                 # text repeat send management. 0: enable text repeat sending,1: disable text repeat sending
-                ("CAN_NART", c_byte),
+                ("CAN_NART", ctypes.c_byte),
                 # FIFO lock management. 0: new text overwrite old, 1: ignore new text
-                ("CAN_RFLM", c_byte),
+                ("CAN_RFLM", ctypes.c_byte),
                 # send priority management, 0: by ID, 1: by order
-                ("CAN_TXFP", c_byte),
+                ("CAN_TXFP", ctypes.c_byte),
                 # relay feature enable. 0x00: close relay function,0x10: relay from CAN1 to CAN2,0x01: relay from CAN2 to CAN1, 0x11: bidirectionaly relay
-                ("CAN_RELAY", c_byte),
-                ("Reserved", c_uint)    # reserved
+                ("CAN_RELAY", ctypes.c_byte),
+                ("Reserved", ctypes.c_uint)    # reserved
                 ];
 # definition of CAN filter setting
 
 
-class VCI_FILTER_CONFIG(Structure):
-    _fields_ = [("Enable", c_byte),            # filter enable. 1: enable,0: disable
-                ("FilterIndex", c_byte),    # filter index. range: 0~13
+class VCI_FILTER_CONFIG(ctypes.Structure):
+    _fields_ = [("Enable", ctypes.c_byte),            # filter enable. 1: enable,0: disable
+                ("FilterIndex", ctypes.c_byte),    # filter index. range: 0~13
                 # filter mode.0: mask bit,1: id list
-                ("FilterMode", c_byte),
+                ("FilterMode", ctypes.c_byte),
                 # filter frame flag. 1: the frame to be filtered is extended frame,0: the frame to be filtered is standard frame
-                ("ExtFrame", c_byte),
-                ("ID_Std_Ext", c_uint),        # verification code ID
-                ("ID_IDE", c_uint),        # verification code IDE
-                ("ID_RTR", c_uint),        # verification code RTR
+                ("ExtFrame", ctypes.c_byte),
+                ("ID_Std_Ext", ctypes.c_uint),        # verification code ID
+                ("ID_IDE", ctypes.c_uint),        # verification code IDE
+                ("ID_RTR", ctypes.c_uint),        # verification code RTR
                 # Mask code ID,only available when filter mode set to mask bit mode
-                ("MASK_Std_Ext", c_uint),
+                ("MASK_Std_Ext", ctypes.c_uint),
                 # Mask code IDE,only available when filter mode set to mask bit mode
-                ("MASK_IDE", c_uint),
+                ("MASK_IDE", ctypes.c_uint),
                 # Mask code RTR,only available when filter mode set to mask bit mode
-                ("MASK_RTR", c_uint),
-                ("Reserved", c_uint),        # reserved
+                ("MASK_RTR", ctypes.c_uint),
+                ("Reserved", ctypes.c_uint),        # reserved
                 ];
 
 
 # definition of CAN receive callback
 if(platform.system() == "Windows"):
-    PVCI_RECEIVE_CALLBACK = WINFUNCTYPE(c_void_p, c_uint, c_uint, c_uint)
+    PVCI_RECEIVE_CALLBACK = ctypes.WINFUNCTYPE(ctypes.c_void_p, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint)
 else:
-    PVCI_RECEIVE_CALLBACK = CFUNCTYPE(c_void_p, c_uint, c_uint, c_uint)
+    PVCI_RECEIVE_CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint)
 
 # CAN type definition
 VCI_USBCAN1 = 3
@@ -178,28 +178,35 @@ ERR_BUFFERCREATE = 0x8000    # Memory is not enough
 STATUS_OK = 0x01
 STATUS_ERR = 0x00
 
+import os
+
+root = os.path.dirname(__file__)
+
 # Import library
 if(platform.system() == "Windows"):
     if "64bit" in platform.architecture():
-        GinkgoLib = windll.LoadLibrary(
-            ".\\lib\\windows\\64bit\\Ginkgo_Driver.dll")
+        lib = os.path.join(root, "lib", "windows", "64bit", "Ginkgo_Driver.dll")
+        GinkgoLib = ctypes.cdll.LoadLibrary(lib)
     else:
-        GinkgoLib = windll.LoadLibrary(
-            ".\\lib\\windows\\32bit\\Ginkgo_Driver.dll")
+        lib = os.path.join(root, "lib", "windows", "32bit", "Ginkgo_Driver.dll")
+        GinkgoLib = ctypes.cdll.LoadLibrary(lib)
 elif(platform.system() == "Darwin"):
-    GinkgoLib = cdll.LoadLibrary("./lib/macos/libGinkgo_Driver.dylib")
+        lib = os.path.join(root, "lib", "macos", "libGinkgo_Driver.dylib")
+        GinkgoLib = ctypes.cdll.LoadLibrary(lib)
 elif(platform.system() == "Linux"):
     if "64bit" in platform.architecture():
-        GinkgoLib = cdll.LoadLibrary("./lib/linux/64bit/libGinkgo_Driver.so")
+        lib = os.path.join(root, "lib", "linux", "64bit", "libGinkgo_Driver.so")
+        GinkgoLib = ctypes.cdll.LoadLibrary(lib)
     else:
-        GinkgoLib = cdll.LoadLibrary("./lib/linux/32bit/libGinkgo_Driver.so")
+        lib = os.path.join(root, "lib", "linux", "32bit", "libGinkgo_Driver.so")
+        GinkgoLib = ctypes.cdll.LoadLibrary(lib)
 else:
     print("Unknown system")
 # Scan device
 
 
 def VCI_ScanDevice(NeedInit=1):
-    return GinkgoLib.VCI_ScanDevice(c_ubyte(NeedInit))
+    return GinkgoLib.VCI_ScanDevice(ctypes.c_ubyte(NeedInit))
 # Open device
 
 
@@ -209,7 +216,7 @@ def VCI_OpenDevice(DevType, DevIndex, Reserved):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_OpenDevice(c_uint(DevType), c_uint(DevIndex), c_uint(Reserved))
+    return GinkgoLib.VCI_OpenDevice(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(Reserved))
 
 # Close device
 
@@ -220,7 +227,7 @@ def VCI_CloseDevice(DevType, DevIndex):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_CloseDevice(c_uint(DevType), c_uint(DevIndex))
+    return GinkgoLib.VCI_CloseDevice(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex))
 # Initialize device
 
 
@@ -232,7 +239,7 @@ def VCI_InitCAN(DevType, DevIndex, CANIndex, pInitConfig):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_InitCAN(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex), pInitConfig)
+    return GinkgoLib.VCI_InitCAN(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex), pInitConfig)
 # Initialize device extend
 
 
@@ -244,13 +251,13 @@ def VCI_InitCANEx(DevType, DevIndex, CANIndex, pInitConfig):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_InitCANEx(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex), pInitConfig)
+    return GinkgoLib.VCI_InitCANEx(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex), pInitConfig)
 # Get board infomation
 
 
 def VCI_ReadBoardInfoEx(DevIndex, pInfo):
     'Get board infomation'
-    return GinkgoLib.VCI_ReadBoardInfoEx(c_uint(DevIndex), pInfo)
+    return GinkgoLib.VCI_ReadBoardInfoEx(ctypes.c_uint(DevIndex), pInfo)
 # Get CAN status
 
 
@@ -262,7 +269,7 @@ def VCI_ReadCANStatus(DevType, DevIndex, CANIndex, pCANStatus):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_ReadCANStatus(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex), pCANStatus)
+    return GinkgoLib.VCI_ReadCANStatus(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex), pCANStatus)
 
 # Set CAN filter
 
@@ -275,7 +282,7 @@ def VCI_SetFilter(DevType, DevIndex, CANIndex, pFilter):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_SetFilter(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex), pFilter)
+    return GinkgoLib.VCI_SetFilter(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex), pFilter)
 
 # Get CAN number from buffer
 
@@ -288,7 +295,7 @@ def VCI_GetReceiveNum(DevType, DevIndex, CANIndex):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_GetReceiveNum(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex))
+    return GinkgoLib.VCI_GetReceiveNum(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex))
 # Clear CAN buffer
 
 
@@ -300,21 +307,21 @@ def VCI_ClearBuffer(DevType, DevIndex, CANIndex):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_ClearBuffer(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex))
+    return GinkgoLib.VCI_ClearBuffer(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex))
 
 # Register receive callback function
 
 
 def VCI_RegisterReceiveCallback(DevIndex, pReceiveCallBack):
     'Register receive callback function'
-    return GinkgoLib.VCI_RegisterReceiveCallback(c_uint(DevIndex), pReceiveCallBack)
+    return GinkgoLib.VCI_RegisterReceiveCallback(ctypes.c_uint(DevIndex), pReceiveCallBack)
 
 # Logout receive callback function
 
 
 def VCI_LogoutReceiveCallback(DevIndex):
     'Logout receive callback function'
-    return GinkgoLib.VCI_LogoutReceiveCallback(c_uint(DevIndex))
+    return GinkgoLib.VCI_LogoutReceiveCallback(ctypes.c_uint(DevIndex))
 
 # Start receive CAN
 
@@ -327,7 +334,7 @@ def VCI_StartCAN(DevType, DevIndex, CANIndex):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_StartCAN(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex))
+    return GinkgoLib.VCI_StartCAN(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex))
 
 # Stop and reset CAN
 
@@ -340,7 +347,7 @@ def VCI_ResetCAN(DevType, DevIndex, CANIndex):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_ResetCAN(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex))
+    return GinkgoLib.VCI_ResetCAN(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex))
 
 # Transmit CAN data
 
@@ -353,7 +360,7 @@ def VCI_Transmit(DevType, DevIndex, CANIndex, pSend, Len):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_Transmit(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex), pSend, c_uint(Len))
+    return GinkgoLib.VCI_Transmit(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex), pSend, ctypes.c_uint(Len))
 
 # Read CAN data from buffer
 
@@ -366,4 +373,4 @@ def VCI_Receive(DevType, DevIndex, CANIndex, pReceive, Len, WaitTime):
     except AssertionError as args:
         print('%s: %s' % (args.__class__.__name__, args))
         exit()
-    return GinkgoLib.VCI_Receive(c_uint(DevType), c_uint(DevIndex), c_uint(CANIndex), pReceive, c_uint(Len), c_uint(WaitTime))
+    return GinkgoLib.VCI_Receive(ctypes.c_uint(DevType), ctypes.c_uint(DevIndex), ctypes.c_uint(CANIndex), pReceive, ctypes.c_uint(Len), ctypes.c_uint(WaitTime))
